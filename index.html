@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tribunal de la Vida – Seminario Enfermería</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0a1a;font-family:'Open Sans',sans-serif;color:#fff;min-height:100vh;padding:16px;}
+
+/* NAV */
+.top-nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+.mode-btn{padding:7px 16px;border-radius:20px;border:2px solid #ffffff30;background:transparent;color:#fff;cursor:pointer;font-size:12px;font-family:'Montserrat',sans-serif;font-weight:700;transition:all .2s;}
+.mode-btn.active{background:#0077B6;border-color:#0077B6;}
+
+.slide-nav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
+.sn{padding:5px 12px;border-radius:10px;border:1.5px solid #ffffff20;background:transparent;color:#aaa;cursor:pointer;font-size:11px;font-family:'Montserrat',sans-serif;transition:all .2s;}
+.sn.active{border-color:#0077B6;color:#fff;background:#0077B620;}
+
+/* SLIDE WRAPPER */
+.sw{max-width:960px;margin:0 auto;}
+.slide{display:none;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;position:relative;box-shadow:0 24px 80px #0009;}
+.slide.vis{display:flex;}
+
+/* ARROWS */
+.arrow-row{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:14px;}
+.arr{background:#ffffff15;border:none;color:#fff;width:42px;height:42px;border-radius:50%;font-size:18px;cursor:pointer;transition:background .2s;}
+.arr:hover{background:#0077B6;}
+.slide-info{font-size:12px;color:#ffffff60;font-family:'Montserrat',sans-serif;min-width:160px;text-align:center;}
+
+/* ═══════════════════════════════
+   SLIDES – PRESENTACIÓN
+═══════════════════════════════ */
+
+/* S0 PORTADA */
+.s0{background:#0D1B2A;flex-direction:column;justify-content:center;align-items:flex-start;padding:7%;}
+.s0 .tag{background:#0077B6;color:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:clamp(10px,1.1vw,14px);padding:5px 16px;border-radius:20px;margin-bottom:4%;}
+.s0 .h1{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(22px,4.5vw,52px);color:#fff;line-height:1.1;margin-bottom:2%;}
+.s0 .h1 span{color:#4CC9F0;}
+.s0 .sub{font-size:clamp(10px,1.4vw,18px);color:#90E0EF;font-weight:600;margin-bottom:5%;}
+.s0 .meta{font-size:clamp(9px,1vw,13px);color:#aaa;}
+.s0 .bar{position:absolute;right:0;top:0;width:6px;height:100%;background:linear-gradient(180deg,#4CC9F0,#0077B6);}
+.s0 .deco{position:absolute;right:6%;bottom:8%;width:clamp(80px,18vw,200px);height:clamp(80px,18vw,200px);border-radius:50%;background:radial-gradient(circle,#0077B630,transparent);border:2px solid #4CC9F020;}
+
+/* S1 PREGUNTA DETONADORA */
+.s1{background:#0077B6;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8%;}
+.s1 .big-q{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(14px,2.8vw,36px);color:#fff;line-height:1.4;max-width:85%;margin-bottom:5%;}
+.s1 .big-q em{color:#90E0EF;font-style:normal;}
+.s1 .sub-q{font-size:clamp(9px,1.2vw,15px);color:#ffffffaa;}
+.s1 .quote-mark{font-size:clamp(40px,8vw,100px);color:#ffffff20;font-family:serif;line-height:1;margin-bottom:2%;}
+
+/* S2 FASE 1 – ACTIVACIÓN */
+.s2{background:#F8F9FA;flex-direction:column;justify-content:flex-start;align-items:flex-start;padding:6% 7%;}
+.s2 .phase-tag{background:#0077B6;color:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:clamp(9px,1vw,12px);padding:4px 14px;border-radius:20px;margin-bottom:3%;}
+.s2 .h2{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(16px,2.8vw,34px);color:#1A1A2E;margin-bottom:4%;}
+.s2 .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2%;width:100%;}
+.s2 .card{background:#fff;border-radius:10px;padding:4% 3%;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 4px 16px #0001;border:2px solid #e0e0e0;}
+.s2 .card .num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(14px,1.8vw,22px);color:#0077B6;}
+.s2 .card .ico{font-size:clamp(18px,3vw,36px);}
+.s2 .card .label{font-size:clamp(7px,.9vw,11px);color:#555;text-align:center;font-weight:600;}
+.s2 .instr{margin-top:auto;font-size:clamp(8px,1vw,12px);color:#777;font-style:italic;}
+
+/* S3 DEFINICIONES */
+.s3{background:#1A1A2E;flex-direction:row;}
+.s3 .left{width:42%;padding:7%;display:flex;flex-direction:column;justify-content:center;}
+.s3 .right{width:58%;display:grid;grid-template-columns:1fr 1fr;gap:3%;padding:6%;align-content:center;}
+.s3 .h2{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(14px,2.4vw,30px);color:#fff;margin-bottom:3%;}
+.s3 .note{font-size:clamp(8px,1vw,13px);color:#4CC9F0;line-height:1.5;}
+.s3 .def-card{background:#ffffff08;border:1.5px solid #ffffff15;border-radius:10px;padding:5% 6%;}
+.s3 .def-card .tipo{font-family:'Montserrat',sans-serif;font-weight:700;font-size:clamp(7px,.85vw,11px);color:#4CC9F0;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.s3 .def-card .def{font-size:clamp(7px,.9vw,12px);color:#E2E8F0;line-height:1.5;}
+
+/* S4 ESTRUCTURA SESIÓN */
+.s4{background:#F8F9FA;flex-direction:column;justify-content:center;padding:5% 7%;}
+.s4 .h2{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(14px,2.4vw,30px);color:#1A1A2E;margin-bottom:4%;}
+.s4 .timeline{display:flex;gap:2%;width:100%;}
+.s4 .phase{flex:1;background:#fff;border-radius:10px;padding:4% 3%;display:flex;flex-direction:column;gap:6px;box-shadow:0 4px 20px #0001;border-top:4px solid;}
+.s4 .phase:nth-child(1){border-color:#0077B6;}
+.s4 .phase:nth-child(2){border-color:#2EC4B6;}
+.s4 .phase:nth-child(3){border-color:#F4A261;}
+.s4 .phase:nth-child(4){border-color:#9B5DE5;}
+.s4 .phase .pnum{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(8px,1vw,12px);color:#aaa;text-transform:uppercase;letter-spacing:1px;}
+.s4 .phase .pname{font-family:'Montserrat',sans-serif;font-weight:700;font-size:clamp(9px,1.1vw,14px);color:#1A1A2E;}
+.s4 .phase .ptime{font-size:clamp(7px,.9vw,11px);color:#0077B6;font-weight:600;}
+.s4 .phase .pdesc{font-size:clamp(7px,.85vw,11px);color:#666;line-height:1.4;margin-top:4px;}
+
+/* S5 BIOÉTICA */
+.s5{background:#0077B6;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8%;}
+.s5 .big{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(13px,2.5vw,32px);color:#fff;line-height:1.4;max-width:80%;margin-bottom:5%;}
+.s5 .big em{color:#90E0EF;font-style:normal;display:block;font-size:clamp(11px,1.6vw,20px);margin-top:3%;}
+.s5 .src{font-size:clamp(8px,1vw,13px);color:#ffffffaa;}
+
+/* S6 CIERRE */
+.s6{background:#0D1B2A;flex-direction:column;justify-content:center;align-items:flex-start;padding:7%;}
+.s6 .h2{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(14px,2.4vw,30px);color:#fff;margin-bottom:5%;}
+.s6 .prompt{background:#ffffff08;border:1.5px solid #4CC9F040;border-radius:12px;padding:5%;font-size:clamp(9px,1.2vw,16px);color:#E2E8F0;line-height:1.7;max-width:80%;}
+.s6 .prompt em{color:#4CC9F0;font-style:normal;font-weight:600;}
+.s6 .note{margin-top:4%;font-size:clamp(8px,1vw,12px);color:#aaa;}
+
+/* NÚMERO DE SLIDE */
+.snum{position:absolute;bottom:12px;right:16px;font-size:clamp(8px,1vw,12px);opacity:.3;font-family:'Montserrat',sans-serif;}
+
+/* ═══════════════════════════════
+   EXPEDIENTES
+═══════════════════════════════ */
+.exp{display:none;width:100%;min-height:auto;aspect-ratio:auto;border-radius:14px;overflow:hidden;position:relative;box-shadow:0 24px 80px #0009;}
+.exp.vis{display:flex;flex-direction:column;}
+
+.exp-header{padding:5% 6% 3%;display:flex;align-items:center;gap:3%;flex-shrink:0;}
+.exp-num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(28px,5vw,64px);opacity:.2;line-height:1;}
+.exp-info{flex:1;}
+.exp-badge{font-family:'Montserrat',sans-serif;font-weight:700;font-size:clamp(8px,.9vw,11px);text-transform:uppercase;letter-spacing:2px;opacity:.7;margin-bottom:4px;}
+.exp-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(13px,2vw,26px);line-height:1.2;}
+.exp-icon{font-size:clamp(30px,5vw,60px);}
+
+.exp-body{padding:0 6% 5%;display:grid;grid-template-columns:1fr 1fr;gap:3%;flex:1;}
+.exp-caso{grid-column:1/-1;background:#ffffff12;border-radius:10px;padding:4% 5%;font-size:clamp(8px,1.1vw,14px);line-height:1.7;margin-bottom:1%;}
+.exp-caso strong{display:block;font-family:'Montserrat',sans-serif;font-size:clamp(8px,.9vw,11px);text-transform:uppercase;letter-spacing:1px;opacity:.6;margin-bottom:6px;}
+.exp-qs{background:#ffffff08;border-radius:10px;padding:4% 5%;}
+.exp-qs h4{font-family:'Montserrat',sans-serif;font-weight:700;font-size:clamp(8px,.9vw,11px);text-transform:uppercase;letter-spacing:1px;opacity:.6;margin-bottom:8px;}
+.exp-qs ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.exp-qs li{font-size:clamp(7px,1vw,13px);line-height:1.5;padding-left:16px;position:relative;}
+.exp-qs li::before{content:"→";position:absolute;left:0;opacity:.5;}
+.exp-roles{background:#ffffff08;border-radius:10px;padding:4% 5%;}
+.exp-roles h4{font-family:'Montserrat',sans-serif;font-weight:700;font-size:clamp(8px,.9vw,11px);text-transform:uppercase;letter-spacing:1px;opacity:.6;margin-bottom:8px;}
+.exp-roles .rol{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;}
+.exp-roles .rol-ico{font-size:clamp(12px,1.5vw,18px);flex-shrink:0;}
+.exp-roles .rol-txt{font-size:clamp(7px,1vw,12px);line-height:1.5;}
+.exp-roles .rol-lbl{font-weight:700;display:block;font-size:clamp(7px,.85vw,11px);opacity:.7;}
+
+/* Colores por expediente */
+.exp1{background:linear-gradient(135deg,#1a0533,#2d1b69);}
+.exp1 .exp-caso{border-left:3px solid #9B5DE5;}
+.exp2{background:linear-gradient(135deg,#0a2e1a,#1b4332);}
+.exp2 .exp-caso{border-left:3px solid #2EC4B6;}
+.exp3{background:linear-gradient(135deg,#1a1a0a,#2e2a00);}
+.exp3 .exp-caso{border-left:3px solid #F4A261;}
+.exp4{background:linear-gradient(135deg,#1a0a0a,#3b1010);}
+.exp4 .exp-caso{border-left:3px solid #E63946;}
+.exp5{background:linear-gradient(135deg,#0a1a2e,#0d3b6e);}
+.exp5 .exp-caso{border-left:3px solid #4CC9F0;}
+</style>
+</head>
+<body>
+
+<!-- MODO -->
+<div class="top-nav">
+  <button class="mode-btn active" onclick="setMode('slides')">📊 Diapositivas de Sesión</button>
+  <button class="mode-btn" onclick="setMode('exp')">📁 Expedientes para Equipos</button>
+</div>
+
+<!-- NAV SLIDES -->
+<div class="slide-nav" id="slide-nav">
+  <button class="sn active" onclick="goSlide(0)">Portada</button>
+  <button class="sn" onclick="goSlide(1)">Pregunta</button>
+  <button class="sn" onclick="goSlide(2)">Fase 1</button>
+  <button class="sn" onclick="goSlide(3)">Definiciones</button>
+  <button class="sn" onclick="goSlide(4)">Estructura</button>
+  <button class="sn" onclick="goSlide(5)">Bioética</button>
+  <button class="sn" onclick="goSlide(6)">Cierre</button>
+</div>
+
+<!-- NAV EXPEDIENTES -->
+<div class="slide-nav" id="exp-nav" style="display:none">
+  <button class="sn active" onclick="goExp(0)">📁 Exp. 1 – Bebé en pausa</button>
+  <button class="sn" onclick="goExp(1)">📁 Exp. 2 – Investigación</button>
+  <button class="sn" onclick="goExp(2)">📁 Exp. 3 – Robot enfermero</button>
+  <button class="sn" onclick="goExp(3)">📁 Exp. 4 – Alargar la vida</button>
+  <button class="sn" onclick="goExp(4)">📁 Exp. 5 – Edición genética</button>
+</div>
+
+<div class="sw">
+
+<!-- ══════ SLIDES ══════ -->
+
+<!-- S0 PORTADA -->
+<div class="slide vis" id="sl0">
+  <div class="s0" style="width:100%">
+    <div class="tag">LICENCIATURA EN ENFERMERÍA · SEMINARIO</div>
+    <div class="h1">Tribunal de<br><span>la Vida</span></div>
+    <div class="sub">Ciencias de la vida, investigación biomédica y bioética</div>
+    <div class="meta">Sesión 80 min · Actividad colaborativa por equipos</div>
+    <div class="bar"></div>
+    <div class="deco"></div>
+    <div class="snum">01</div>
+  </div>
+</div>
+
+<!-- S1 PREGUNTA DETONADORA -->
+<div class="slide" id="sl1">
+  <div class="s1" style="width:100%">
+    <div class="quote-mark">"</div>
+    <div class="big-q">Si no existe una definición<br>universalmente aceptada de vida…<br><em>¿cómo decides tú, como enfermero/a,<br>cuándo luchar por ella?</em></div>
+    <div class="sub-q">Reflexiona en silencio 60 segundos antes de continuar</div>
+    <div class="snum">02</div>
+  </div>
+</div>
+
+<!-- S2 FASE 1 ACTIVACIÓN -->
+<div class="slide" id="sl2">
+  <div class="s2" style="width:100%">
+    <div class="phase-tag">⚡ FASE 1 · Activación · 10 min</div>
+    <div class="h2">¿Esto está vivo?</div>
+    <div class="grid">
+      <div class="card"><div class="num">01</div><div class="ico">🕯️</div><div class="label">Llama de una vela</div></div>
+      <div class="card"><div class="num">02</div><div class="ico">🦠</div><div class="label">Virus COVID-19</div></div>
+      <div class="card"><div class="num">03</div><div class="ico">🧬</div><div class="label">Embrión 3 días en criopreservación</div></div>
+      <div class="card"><div class="num">04</div><div class="ico">🛌</div><div class="label">Paciente en estado vegetativo</div></div>
+      <div class="card"><div class="num">05</div><div class="ico">🤖</div><div class="label">Robot con IA que "aprende"</div></div>
+    </div>
+    <div class="instr">Vota en silencio: 👍 vivo · 👎 no vivo — luego argumenta con una definición del documento</div>
+    <div class="snum">03</div>
+  </div>
+</div>
+
+<!-- S3 DEFINICIONES -->
+<div class="slide" id="sl3">
+  <div class="s3" style="width:100%">
+    <div class="left">
+      <div class="h2">Las definiciones de vida según la ciencia</div>
+      <div class="note">Ninguna es universalmente aceptada.<br>Todas serán herramientas de argumentación en los expedientes.</div>
+    </div>
+    <div class="right">
+      <div class="def-card">
+        <div class="tipo">Metabólica</div>
+        <div class="def">"Vivo es todo aquello que ingiere, metaboliza y excreta" — Mosterín</div>
+      </div>
+      <div class="def-card">
+        <div class="tipo">Termodinámica</div>
+        <div class="def">"Vivo es cualquier cosa que se aleje del equilibrio termodinámico"</div>
+      </div>
+      <div class="def-card">
+        <div class="tipo">Reproductiva</div>
+        <div class="def">"Algo vivo es algo capaz de autoproducirse"</div>
+      </div>
+      <div class="def-card">
+        <div class="tipo">Complejidad</div>
+        <div class="def">"Las criaturas vivas son las únicas cosas programadas para actuar" — Mosterín</div>
+      </div>
+      <div class="def-card">
+        <div class="tipo">Evolutiva</div>
+        <div class="def">"Lo vivo es aquello que evoluciona por selección natural" — Mosterín</div>
+      </div>
+      <div class="def-card">
+        <div class="tipo">Filosófica</div>
+        <div class="def">"Vida es capacidad de acción inmanente" — Aristóteles</div>
+      </div>
+    </div>
+    <div class="snum">04</div>
+  </div>
+</div>
+
+<!-- S4 ESTRUCTURA -->
+<div class="slide" id="sl4">
+  <div class="s4" style="width:100%">
+    <div class="h2">Estructura de la sesión · 80 minutos</div>
+    <div class="timeline">
+      <div class="phase">
+        <div class="pnum">Fase 1</div>
+        <div class="pname">⚡ ¿Esto está vivo?</div>
+        <div class="ptime">10 minutos</div>
+        <div class="pdesc">Votación individual con 5 imágenes provocadoras. Activa conocimientos previos.</div>
+      </div>
+      <div class="phase">
+        <div class="pnum">Fase 2</div>
+        <div class="pname">🔨 El Tribunal</div>
+        <div class="ptime">40 minutos</div>
+        <div class="pdesc">Cada equipo analiza un expediente real y construye su veredicto con ciencia + ética + enfermería.</div>
+      </div>
+      <div class="phase">
+        <div class="pnum">Fase 3</div>
+        <div class="pname">🗣️ El Veredicto</div>
+        <div class="ptime">20 minutos</div>
+        <div class="pdesc">3 min por equipo: la ciencia dice · la ética dice · enfermería dice. Preguntas cruzadas.</div>
+      </div>
+      <div class="phase">
+        <div class="pnum">Fase 4</div>
+        <div class="pname">✍️ Cierre reflexivo</div>
+        <div class="ptime">10 minutos</div>
+        <div class="pdesc">Tarjeta individual: la definición que más me interpela como futuro/a enfermero/a.</div>
+      </div>
+    </div>
+    <div class="snum">05</div>
+  </div>
+</div>
+
+<!-- S5 BIOÉTICA -->
+<div class="slide" id="sl5">
+  <div class="s5" style="width:100%">
+    <div class="big">
+      "No todo cuanto se <em style="color:#ffe066;font-style:normal">puede</em> hacer<br>con el conocimiento y la técnica,<br>se <em style="color:#ff6b6b;font-style:normal">debe</em> hacer"
+      <em>— Principio fundacional de la Bioética</em>
+    </div>
+    <div class="src">Este principio es el hilo conductor de todos los expedientes de hoy</div>
+    <div class="snum">06</div>
+  </div>
+</div>
+
+<!-- S6 CIERRE -->
+<div class="slide" id="sl6">
+  <div class="s6" style="width:100%">
+    <div class="h2">Cierre reflexivo · Tarjeta individual</div>
+    <div class="prompt">
+      "Después de esta sesión, la definición de vida que más me interpela como futuro/a enfermero/a es
+      <em>__________________</em>
+      porque en mi práctica clínica voy a enfrentarme a
+      <em>__________________</em>"
+    </div>
+    <div class="note">Escribe en tu tarjeta · No hay respuestas correctas · Solo hay respuestas honestas</div>
+    <div class="snum">07</div>
+  </div>
+</div>
+
+<!-- ══════ EXPEDIENTES ══════ -->
+
+<!-- EXP 1 -->
+<div class="exp exp1" id="ex0">
+  <div class="exp-header">
+    <div class="exp-num">01</div>
+    <div class="exp-info">
+      <div class="exp-badge" style="color:#c89bff">Expediente Clínico · Problemática del inicio de la vida</div>
+      <div class="exp-title" style="color:#fff">👶 El bebé en pausa</div>
+    </div>
+    <div class="exp-icon">🧬</div>
+  </div>
+  <div class="exp-body">
+    <div class="exp-caso">
+      <strong>📋 Caso</strong>
+      Una pareja conserva 4 embriones fertilizados congelados desde hace 10 años en una clínica de reproducción asistida. Hoy se divorcian y no logran un acuerdo: él exige que sean destruidos, argumentando que no desea ser padre. Ella quiere implantarlos, pues los considera sus hijos. La clínica solicita orientación al equipo de salud.
+    </div>
+    <div class="exp-qs">
+      <h4>🔬 Preguntas para el equipo</h4>
+      <ul>
+        <li>¿Desde cuál definición de vida son "seres vivos" estos embriones?</li>
+        <li>¿Cuál definición los excluiría? ¿Por qué?</li>
+        <li>¿Tiene el personal de enfermería un papel ético en esta decisión?</li>
+        <li>"No todo lo que se puede, se debe hacer" — ¿aplica aquí y cómo?</li>
+      </ul>
+    </div>
+    <div class="exp-roles">
+      <h4>💉 Su veredicto debe incluir</h4>
+      <div class="rol"><div class="rol-ico">🔬</div><div class="rol-txt"><span class="rol-lbl">La ciencia dice</span>Argumento basado en 2 definiciones de vida del documento</div></div>
+      <div class="rol"><div class="rol-ico">⚖️</div><div class="rol-txt"><span class="rol-lbl">La ética dice</span>Postura bioética fundamentada</div></div>
+      <div class="rol"><div class="rol-ico">💙</div><div class="rol-txt"><span class="rol-lbl">Enfermería dice</span>Rol concreto del enfermero/a en este caso</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXP 2 -->
+<div class="exp exp2" id="ex1">
+  <div class="exp-header">
+    <div class="exp-num">02</div>
+    <div class="exp-info">
+      <div class="exp-badge" style="color:#7fffd4">Expediente Biomédico · Investigación y equidad en salud</div>
+      <div class="exp-title" style="color:#fff">🔬 La investigación que salva... ¿a quién?</div>
+    </div>
+    <div class="exp-icon">💊</div>
+  </div>
+  <div class="exp-body">
+    <div class="exp-caso">
+      <strong>📋 Caso</strong>
+      Un laboratorio farmacéutico desarrolla un medicamento contra el dengue hemorrágico usando ensayos clínicos en comunidades rurales de Oaxaca. Tres años después, el fármaco es aprobado y resulta altamente efectivo. Sin embargo, su precio de venta es de $12,000 pesos por tratamiento completo — inaccesible para las mismas comunidades que participaron en el estudio. El laboratorio argumenta que los costos de investigación biomédica justifican el precio.
+    </div>
+    <div class="exp-qs">
+      <h4>🔬 Preguntas para el equipo</h4>
+      <ul>
+        <li>¿Cumple con el objetivo de las ciencias de la vida de "promover la salud"?</li>
+        <li>¿Dónde está la frontera entre investigación biomédica y explotación?</li>
+        <li>¿Qué implica la transición epidemiológica en comunidades vulnerables?</li>
+        <li>Como enfermero/a en esa comunidad, ¿qué acción tomarías?</li>
+      </ul>
+    </div>
+    <div class="exp-roles">
+      <h4>💉 Su veredicto debe incluir</h4>
+      <div class="rol"><div class="rol-ico">🔬</div><div class="rol-txt"><span class="rol-lbl">La ciencia dice</span>Argumento basado en 2 definiciones de vida del documento</div></div>
+      <div class="rol"><div class="rol-ico">⚖️</div><div class="rol-txt"><span class="rol-lbl">La ética dice</span>Postura bioética fundamentada</div></div>
+      <div class="rol"><div class="rol-ico">💙</div><div class="rol-txt"><span class="rol-lbl">Enfermería dice</span>Rol concreto del enfermero/a en este caso</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXP 3 -->
+<div class="exp exp3" id="ex2">
+  <div class="exp-header">
+    <div class="exp-num">03</div>
+    <div class="exp-info">
+      <div class="exp-badge" style="color:#ffd580">Expediente Tecnológico · Biotecnología y cuidado humano</div>
+      <div class="exp-title" style="color:#fff">🤖 La máquina que cuida</div>
+    </div>
+    <div class="exp-icon">🏥</div>
+  </div>
+  <div class="exp-body">
+    <div class="exp-caso">
+      <strong>📋 Caso</strong>
+      Un hospital público en CDMX implementa un sistema de robots de enfermería para monitoreo nocturno de pacientes con enfermedades crónicas. Los resultados muestran una reducción del 40% en errores de medicación y una mejora en tiempos de respuesta. Sin embargo, la implementación implica eliminar 30 plazas de enfermería de turno nocturno. La dirección del hospital argumenta que la tecnología "mejora la calidad de vida" de los pacientes.
+    </div>
+    <div class="exp-qs">
+      <h4>🔬 Preguntas para el equipo</h4>
+      <ul>
+        <li>Las nuevas tecnologías médicas son parte de las ciencias de la vida, ¿justifica eso este uso?</li>
+        <li>¿Puede una máquina ejercer el cuidado como lo define enfermería?</li>
+        <li>¿Cómo equilibras innovación tecnológica con dignidad laboral y humana?</li>
+        <li>¿Qué aspecto de la "acción inmanente" (Aristóteles) no puede replicar un robot?</li>
+      </ul>
+    </div>
+    <div class="exp-roles">
+      <h4>💉 Su veredicto debe incluir</h4>
+      <div class="rol"><div class="rol-ico">🔬</div><div class="rol-txt"><span class="rol-lbl">La ciencia dice</span>Argumento basado en 2 definiciones de vida del documento</div></div>
+      <div class="rol"><div class="rol-ico">⚖️</div><div class="rol-txt"><span class="rol-lbl">La ética dice</span>Postura bioética fundamentada</div></div>
+      <div class="rol"><div class="rol-ico">💙</div><div class="rol-txt"><span class="rol-lbl">Enfermería dice</span>Rol concreto del enfermero/a en este caso</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXP 4 -->
+<div class="exp exp4" id="ex3">
+  <div class="exp-header">
+    <div class="exp-num">04</div>
+    <div class="exp-info">
+      <div class="exp-badge" style="color:#ff9999">Expediente Clínico · Problemática al final de la vida</div>
+      <div class="exp-title" style="color:#fff">❤️ ¿Cuánto vale alargar la vida?</div>
+    </div>
+    <div class="exp-icon">🫀</div>
+  </div>
+  <div class="exp-body">
+    <div class="exp-caso">
+      <strong>📋 Caso</strong>
+      Paciente femenina de 94 años con cáncer de páncreas en etapa IV, sin posibilidad de remisión. La paciente, lúcida y consciente, solicita ser conectada a ventilación mecánica para "ganar tiempo". Su familia se opone, considerando que es un sufrimiento innecesario. El médico tratante está a favor de respetar la voluntad de la paciente. La enfermera de turno tiene 6 horas de contacto diario con ella y conoce sus miedos reales.
+    </div>
+    <div class="exp-qs">
+      <h4>🔬 Preguntas para el equipo</h4>
+      <ul>
+        <li>¿Cuánto se puede alargar la vida humana? ¿Cuánto se debe?</li>
+        <li>¿Cuál definición de vida apoya la decisión de la paciente? ¿Cuál la contradice?</li>
+        <li>¿Cuál es el papel específico de enfermería en las decisiones al final de la vida?</li>
+        <li>¿El equilibrio termodinámico (la muerte) puede ser un derecho?</li>
+      </ul>
+    </div>
+    <div class="exp-roles">
+      <h4>💉 Su veredicto debe incluir</h4>
+      <div class="rol"><div class="rol-ico">🔬</div><div class="rol-txt"><span class="rol-lbl">La ciencia dice</span>Argumento basado en 2 definiciones de vida del documento</div></div>
+      <div class="rol"><div class="rol-ico">⚖️</div><div class="rol-txt"><span class="rol-lbl">La ética dice</span>Postura bioética fundamentada</div></div>
+      <div class="rol"><div class="rol-ico">💙</div><div class="rol-txt"><span class="rol-lbl">Enfermería dice</span>Rol concreto del enfermero/a en este caso</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXP 5 -->
+<div class="exp exp5" id="ex4">
+  <div class="exp-header">
+    <div class="exp-num">05</div>
+    <div class="exp-info">
+      <div class="exp-badge" style="color:#80d4ff">Expediente Genético · Biotecnología e identidad humana</div>
+      <div class="exp-title" style="color:#fff">🧬 El gen que nos hace humanos</div>
+    </div>
+    <div class="exp-icon">⚗️</div>
+  </div>
+  <div class="exp-body">
+    <div class="exp-caso">
+      <strong>📋 Caso</strong>
+      Un equipo de científicos edita genéticamente embriones humanos usando CRISPR para eliminar el gen CCR5, asociado a la susceptibilidad al VIH. Dos bebés nacen sanas y sin predisposición al virus. La comunidad científica internacional condena el experimento por considerarlo prematuro e irresponsable. Los padres, seropositivos, defienden el procedimiento como un acto de amor. En México, el Comité de Bioética Nacional delibera si regular o prohibir esta práctica.
+    </div>
+    <div class="exp-qs">
+      <h4>🔬 Preguntas para el equipo</h4>
+      <ul>
+        <li>¿Los cambios genéticos que nos hacen humanos son éticamente editables?</li>
+        <li>Usa la definición evolutiva: ¿estamos dirigiendo artificialmente la selección natural?</li>
+        <li>¿Qué postura tendría enfermería ante pacientes producto de edición genética?</li>
+        <li>¿La variabilidad genética y la salud deben ser gestionadas por la ciencia o por la naturaleza?</li>
+      </ul>
+    </div>
+    <div class="exp-roles">
+      <h4>💉 Su veredicto debe incluir</h4>
+      <div class="rol"><div class="rol-ico">🔬</div><div class="rol-txt"><span class="rol-lbl">La ciencia dice</span>Argumento basado en 2 definiciones de vida del documento</div></div>
+      <div class="rol"><div class="rol-ico">⚖️</div><div class="rol-txt"><span class="rol-lbl">La ética dice</span>Postura bioética fundamentada</div></div>
+      <div class="rol"><div class="rol-ico">💙</div><div class="rol-txt"><span class="rol-lbl">Enfermería dice</span>Rol concreto del enfermero/a en este caso</div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /sw -->
+
+<div class="arrow-row" id="slide-arrows">
+  <button class="arr" onclick="prevSlide()">←</button>
+  <div class="slide-info" id="slide-info">Slide 1 de 7 · Portada</div>
+  <button class="arr" onclick="nextSlide()">→</button>
+</div>
+
+<div class="arrow-row" id="exp-arrows" style="display:none">
+  <button class="arr" onclick="prevExp()">←</button>
+  <div class="slide-info" id="exp-info">Expediente 1 de 5</div>
+  <button class="arr" onclick="nextExp()">→</button>
+</div>
+
+<script>
+const slideNames = ['Portada','Pregunta detonadora','Fase 1 · Activación','Definiciones de vida','Estructura de sesión','Bioética · Principio clave','Cierre reflexivo'];
+const expNames = ['El bebé en pausa','La investigación que salva','La máquina que cuida','¿Cuánto vale alargar la vida?','El gen que nos hace humanos'];
+
+let mode = 'slides', cs = 0, ce = 0;
+const slides = [...document.querySelectorAll('.slide')];
+const exps = [...document.querySelectorAll('.exp')];
+const snavBtns = [...document.querySelectorAll('#slide-nav .sn')];
+const enavBtns = [...document.querySelectorAll('#exp-nav .sn')];
+
+function setMode(m){
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.mode-btn:${m==='slides'?'first':'last'}-child`).classList.add('active');
+  document.getElementById('slide-nav').style.display = m==='slides'?'flex':'none';
+  document.getElementById('exp-nav').style.display = m==='exp'?'flex':'none';
+  document.getElementById('slide-arrows').style.display = m==='slides'?'flex':'none';
+  document.getElementById('exp-arrows').style.display = m==='exp'?'flex':'none';
+  slides.forEach(s=>s.classList.remove('vis'));
+  exps.forEach(e=>e.classList.remove('vis'));
+  if(m==='slides'){slides[cs].classList.add('vis');}
+  else{exps[ce].classList.add('vis');}
+}
+
+function goSlide(i){
+  slides[cs].classList.remove('vis');
+  snavBtns[cs].classList.remove('active');
+  cs=i;
+  slides[cs].classList.add('vis');
+  snavBtns[cs].classList.add('active');
+  document.getElementById('slide-info').textContent=`Slide ${cs+1} de 7 · ${slideNames[cs]}`;
+}
+function nextSlide(){goSlide((cs+1)%7);}
+function prevSlide(){goSlide((cs+6)%7);}
+
+function goExp(i){
+  exps[ce].classList.remove('vis');
+  enavBtns[ce].classList.remove('active');
+  ce=i;
+  exps[ce].classList.add('vis');
+  enavBtns[ce].classList.add('active');
+  document.getElementById('exp-info').textContent=`Expediente ${ce+1} de 5 · ${expNames[ce]}`;
+}
+function nextExp(){goExp((ce+1)%5);}
+function prevExp(){goExp((ce+4)%5);}
+
+document.addEventListener('keydown',e=>{
+  if(mode==='slides'){if(e.key==='ArrowRight')nextSlide();if(e.key==='ArrowLeft')prevSlide();}
+  else{if(e.key==='ArrowRight')nextExp();if(e.key==='ArrowLeft')prevExp();}
+});
+
+setMode('slides');
+</script>
+</body>
+</html>
