@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔥 PrometeoQuiz — Panel del Profesor</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --fire:#FF4D00; --gold:#FFD700; --ember:#FF8C00;
+  --red:#E21B3C; --blue:#1368CE; --yellow:#D89E00; --green:#26890C;
+  --red-l:#FF3355; --blue-l:#2196F3; --yellow-l:#FFC107; --green-l:#4CAF50;
+  --dark:#0D0D1A; --card:#1A1A2E; --card2:#22223A; --muted:#8888AA;
+  --text:#FFFFFF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* PARTICLES */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.particle{position:absolute;border-radius:50%;opacity:0;animation:rise linear infinite;}
+@keyframes rise{0%{transform:translateY(100vh) scale(0);opacity:0;}10%{opacity:.5;}90%{opacity:.2;}100%{transform:translateY(-10vh) scale(1.5);opacity:0;}}
+
+/* SCREENS */
+.screen{display:none;position:relative;z-index:1;min-height:100vh;flex-direction:column;}
+.screen.active{display:flex;}
+
+/* ═══ LOBBY ═══ */
+#s-lobby{
+  background:radial-gradient(ellipse 80% 60% at 50% 110%,rgba(255,77,0,.2),transparent 55%);
+  padding:2rem;
+  align-items:center;
+}
+.lobby-top{width:100%;max-width:1100px;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
+.game-logo{display:flex;align-items:center;gap:0.8rem;}
+.logo-flame{font-size:2.5rem;animation:fp 1.5s ease-in-out infinite alternate;}
+@keyframes fp{from{transform:scaleY(1) rotate(-2deg);filter:drop-shadow(0 0 12px #FF4D00);}to{transform:scaleY(1.1) rotate(2deg);filter:drop-shadow(0 0 24px #FF8C00);}}
+.game-logo h1{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.6rem;background:linear-gradient(135deg,#FF4D00,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.game-logo small{display:block;font-size:.75rem;color:var(--muted);margin-top:-4px;}
+
+/* CODE BOX */
+.code-box{background:var(--card);border:2px solid rgba(255,215,0,.3);border-radius:16px;padding:1.2rem 2rem;text-align:center;}
+.code-label{font-size:.7rem;letter-spacing:.18em;color:var(--muted);font-weight:700;}
+.code-num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:3rem;color:var(--gold);letter-spacing:.15em;line-height:1;}
+.code-sub{font-size:.72rem;color:var(--muted);margin-top:.3rem;}
+
+/* PLAYER COUNT */
+.player-count-box{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:1rem 1.8rem;text-align:center;}
+.pc-num{font-family:'Montserrat',sans-serif;font-size:2.8rem;font-weight:900;color:var(--green-l);}
+.pc-lbl{font-size:.72rem;color:var(--muted);letter-spacing:.1em;}
+
+/* LOBBY GRID */
+.lobby-main{width:100%;max-width:1100px;display:grid;grid-template-columns:1fr 340px;gap:1.5rem;flex:1;}
+.players-panel{background:var(--card);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,.06);overflow:hidden;}
+.panel-title{font-size:.75rem;letter-spacing:.15em;color:var(--muted);font-weight:800;margin-bottom:1rem;}
+.players-grid{display:flex;flex-wrap:wrap;gap:.5rem;max-height:calc(100vh - 320px);overflow-y:auto;}
+.player-chip{
+  background:linear-gradient(135deg,rgba(255,77,0,.2),rgba(255,140,0,.1));
+  border:1px solid rgba(255,140,0,.25);
+  border-radius:999px;padding:.3rem .9rem;
+  font-size:.82rem;font-weight:700;
+  animation:chipIn .35s cubic-bezier(.34,1.56,.64,1);
+  display:flex;align-items:center;gap:.4rem;
+}
+@keyframes chipIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+.chip-dot{width:7px;height:7px;border-radius:50%;background:var(--green-l);flex-shrink:0;}
+
+/* RIGHT PANEL */
+.right-panel{display:flex;flex-direction:column;gap:1rem;}
+.info-card{background:var(--card);border-radius:14px;padding:1.2rem;border:1px solid rgba(255,255,255,.06);}
+.info-card h3{font-size:.7rem;letter-spacing:.15em;color:var(--muted);margin-bottom:.8rem;}
+.stat-item{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.88rem;}
+.stat-item:last-child{border:none;}
+.stat-val{font-weight:800;color:var(--yellow-l);}
+
+/* BUTTONS */
+.btn-start{width:100%;padding:1rem;border:none;border-radius:12px;background:linear-gradient(135deg,#FF4D00,#FF8C00);color:#fff;font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.05rem;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 20px rgba(255,77,0,.4);margin-top:.5rem;}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,77,0,.5);}
+.btn-start:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+/* ═══ QUESTION DISPLAY (proyector) ═══ */
+#s-qdisplay{background:var(--dark);padding:1.5rem;}
+.qd-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;}
+.qd-badge{background:rgba(255,255,255,.07);border-radius:8px;padding:.3rem .9rem;font-weight:800;font-size:.8rem;color:var(--muted);}
+.qd-score{margin-left:auto;font-size:.8rem;color:var(--muted);}
+.qd-progress{display:flex;gap:5px;align-items:center;}
+.qd-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.15);}
+.qd-dot.done{background:var(--green-l);}
+.qd-dot.cur{background:var(--yellow-l);width:14px;height:14px;}
+
+/* BIG TIMER */
+.big-timer-wrap{position:relative;width:90px;height:90px;flex-shrink:0;}
+.big-timer-svg{transform:rotate(-90deg);}
+.bt-bg{fill:none;stroke:rgba(255,255,255,.1);stroke-width:7;}
+.bt-arc{fill:none;stroke:var(--yellow-l);stroke-width:7;stroke-linecap:round;stroke-dasharray:220;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke .3s;}
+.bt-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.8rem;}
+
+.qd-question-box{background:var(--card);border-radius:18px;padding:2rem 2.5rem;text-align:center;margin-bottom:1.5rem;border:1px solid rgba(255,255,255,.06);min-height:120px;display:flex;align-items:center;justify-content:center;}
+.qd-q-text{font-size:clamp(1.1rem,2.5vw,1.6rem);font-weight:800;line-height:1.5;}
+
+.qd-answers{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.qd-ans{border-radius:14px;padding:1.2rem 1.5rem;font-size:clamp(.9rem,2vw,1.1rem);font-weight:800;color:#fff;display:flex;align-items:center;gap:.8rem;min-height:70px;}
+.qd-ans[data-c="0"]{background:var(--red);}
+.qd-ans[data-c="1"]{background:var(--blue);}
+.qd-ans[data-c="2"]{background:var(--yellow);color:#1a1a1a;}
+.qd-ans[data-c="3"]{background:var(--green);}
+.qd-ans .ans-shape{width:42px;height:42px;border-radius:10px;background:rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.qd-ans.reveal-correct{animation:correctGlow .6s ease;box-shadow:0 0 30px rgba(76,175,80,.7);}
+.qd-ans.reveal-wrong{filter:brightness(.35) saturate(.2);}
+@keyframes correctGlow{0%{transform:scale(1);}40%{transform:scale(1.04);}100%{transform:scale(1);}}
+
+/* LIVE BAR */
+.live-bar-wrap{background:var(--card);border-radius:14px;padding:1.2rem 1.5rem;display:flex;align-items:center;gap:1.5rem;border:1px solid rgba(255,255,255,.06);}
+.live-count{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.3rem;color:var(--green-l);}
+.live-lbl{font-size:.75rem;color:var(--muted);}
+.ans-bars{display:flex;gap:.5rem;flex:1;align-items:flex-end;height:48px;}
+.ans-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:.2rem;}
+.ans-bar-fill{width:100%;border-radius:4px 4px 0 0;transition:height .5s ease;min-height:4px;}
+.ans-bar-fill[data-c="0"]{background:var(--red-l);}
+.ans-bar-fill[data-c="1"]{background:var(--blue-l);}
+.ans-bar-fill[data-c="2"]{background:var(--yellow-l);}
+.ans-bar-fill[data-c="3"]{background:var(--green-l);}
+.ans-bar-num{font-size:.7rem;font-weight:800;color:var(--muted);}
+
+.qd-controls{display:flex;gap:1rem;margin-top:1rem;}
+.btn-ctrl{flex:1;padding:.8rem;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.85rem;cursor:pointer;transition:transform .15s;}
+.btn-reveal{background:linear-gradient(135deg,#26890C,#4CAF50);color:#fff;}
+.btn-reveal:hover{transform:scale(1.03);}
+.btn-nxt{background:linear-gradient(135deg,#FF4D00,#FF8C00);color:#fff;}
+.btn-nxt:hover{transform:scale(1.03);}
+
+/* ═══ LEADERBOARD ═══ */
+#s-leaderboard{background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(255,200,0,.1),transparent 55%);padding:2rem;align-items:center;}
+.lb-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(1.8rem,4vw,3rem);background:linear-gradient(135deg,#FF4D00,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.3rem;}
+.lb-sub{color:var(--muted);font-size:.9rem;margin-bottom:2rem;}
+.lb-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;width:100%;max-width:1000px;}
+.lb-left{display:flex;flex-direction:column;gap:.7rem;}
+.podium-row{background:var(--card);border-radius:14px;padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;border:1px solid rgba(255,255,255,.06);animation:slideUp .5s ease forwards;opacity:0;}
+@keyframes slideUp{to{opacity:1;transform:translateY(0);}from{opacity:0;transform:translateY(30px);}}
+.podium-row.gold{border-color:rgba(255,215,0,.4);background:rgba(255,215,0,.07);}
+.rank-badge{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:1rem;flex-shrink:0;}
+.r1{background:linear-gradient(135deg,#FFD700,#FFA500);color:#1a1a1a;}
+.r2{background:linear-gradient(135deg,#C0C0C0,#909090);color:#1a1a1a;}
+.r3{background:linear-gradient(135deg,#CD7F32,#8B4513);color:#fff;}
+.rn{background:rgba(255,255,255,.1);color:var(--muted);}
+.pr-info{flex:1;}
+.pr-name{font-weight:800;font-size:.95rem;}
+.pr-correct{font-size:.72rem;color:var(--muted);}
+.pr-score{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.1rem;color:var(--yellow-l);}
+.pr-bar-wrap{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:.4rem;}
+.pr-bar-fill{height:100%;background:linear-gradient(90deg,#FF4D00,#FFD700);border-radius:2px;transition:width .8s ease;}
+
+.lb-right{display:flex;flex-direction:column;gap:1rem;}
+.stats-card{background:var(--card);border-radius:14px;padding:1.5rem;border:1px solid rgba(255,255,255,.06);}
+.stats-card h3{font-size:.7rem;letter-spacing:.15em;color:var(--muted);margin-bottom:1rem;}
+.stat-row{display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.88rem;}
+.stat-row:last-child{border:none;}
+.sv{font-weight:800;color:var(--yellow-l);}
+.dist-row{display:flex;align-items:center;gap:.7rem;padding:.4rem 0;}
+.dist-label{font-size:.75rem;color:var(--muted);width:60px;flex-shrink:0;}
+.dist-bar{flex:1;height:8px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;}
+.dist-fill{height:100%;border-radius:4px;transition:width 1s ease;}
+.dist-num{font-size:.75rem;font-weight:800;color:var(--muted);width:28px;text-align:right;}
+
+.btn-restart{margin-top:1.5rem;padding:1rem 3rem;border:none;border-radius:12px;background:linear-gradient(135deg,#FF4D00,#FF8C00);color:#fff;font-family:'Montserrat',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;box-shadow:0 4px 20px rgba(255,77,0,.4);transition:transform .15s;}
+.btn-restart:hover{transform:scale(1.04);}
+
+@media(max-width:700px){
+  .lobby-main{grid-template-columns:1fr;}
+  .qd-answers{grid-template-columns:1fr;}
+  .lb-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div id="particles"></div>
+
+<!-- ═══ LOBBY ═══ -->
+<div class="screen active" id="s-lobby">
+  <div class="lobby-top">
+    <div class="game-logo">
+      <span class="logo-flame">🔥</span>
+      <div>
+        <h1>PrometeoQuiz</h1>
+        <small>Panel del Profesor — Proyectar esta pantalla</small>
+      </div>
+    </div>
+    <div class="code-box">
+      <div class="code-label">CÓDIGO DE SALA</div>
+      <div class="code-num" id="roomCode">—</div>
+      <div class="code-sub">Los alumnos ingresan este código</div>
+    </div>
+    <div class="player-count-box">
+      <div class="pc-num" id="playerCount">0</div>
+      <div class="pc-lbl">ALUMNOS CONECTADOS</div>
+    </div>
+  </div>
+
+  <div class="lobby-main">
+    <div class="players-panel">
+      <div class="panel-title">👥 SALA DE ESPERA — ALUMNOS CONECTADOS</div>
+      <div class="players-grid" id="playersGrid">
+        <div style="color:var(--muted);font-size:.85rem;width:100%;text-align:center;padding:2rem;">Esperando alumnos...</div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="info-card">
+        <h3>📋 INFORMACIÓN DEL QUIZ</h3>
+        <div class="stat-item"><span>Preguntas</span><span class="stat-val">10</span></div>
+        <div class="stat-item"><span>Tiempo por pregunta</span><span class="stat-val">20 seg</span></div>
+        <div class="stat-item"><span>Puntos máximos</span><span class="stat-val">10,000</span></div>
+        <div class="stat-item"><span>Tema</span><span class="stat-val">Prometeo &amp; Enfermería</span></div>
+        <div class="stat-item"><span>Mínimo para iniciar</span><span class="stat-val">1 alumno</span></div>
+      </div>
+      <div class="info-card">
+        <h3>🎮 CONTROLES</h3>
+        <button class="btn-start" id="btnStart" onclick="startQuiz()">⚡ INICIAR QUIZ</button>
+        <p style="font-size:.72rem;color:var(--muted);margin-top:.7rem;text-align:center;">Los alumnos recibirán la señal automáticamente en sus dispositivos</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ QUESTION DISPLAY ═══ -->
+<div class="screen" id="s-qdisplay">
+  <div class="qd-header">
+    <div class="qd-progress" id="qdProgress"></div>
+    <div class="qd-badge" id="qdBadge">1 / 10</div>
+    <div class="qd-score" id="qdAnsweredCount">0 respondieron</div>
+    <div class="big-timer-wrap">
+      <svg class="big-timer-svg" width="90" height="90" viewBox="0 0 90 90">
+        <circle class="bt-bg" cx="45" cy="45" r="35"/>
+        <circle class="bt-arc" id="btArc" cx="45" cy="45" r="35"/>
+      </svg>
+      <div class="bt-num" id="btNum">20</div>
+    </div>
+  </div>
+
+  <div class="qd-question-box">
+    <div class="qd-q-text" id="qdQText"></div>
+  </div>
+
+  <div class="qd-answers" id="qdAnswers"></div>
+
+  <div class="live-bar-wrap">
+    <div>
+      <div class="live-count" id="liveAnswered">0</div>
+      <div class="live-lbl">han respondido</div>
+    </div>
+    <div class="ans-bars" id="ansBars">
+      <div class="ans-bar-col"><div class="ans-bar-fill" data-c="0" id="bar0" style="height:4px"></div><div class="ans-bar-num" id="bnum0">0</div></div>
+      <div class="ans-bar-col"><div class="ans-bar-fill" data-c="1" id="bar1" style="height:4px"></div><div class="ans-bar-num" id="bnum1">0</div></div>
+      <div class="ans-bar-col"><div class="ans-bar-fill" data-c="2" id="bar2" style="height:4px"></div><div class="ans-bar-num" id="bnum2">0</div></div>
+      <div class="ans-bar-col"><div class="ans-bar-fill" data-c="3" id="bar3" style="height:4px"></div><div class="ans-bar-num" id="bnum3">0</div></div>
+    </div>
+    <div class="qd-controls">
+      <button class="btn-ctrl btn-reveal" onclick="revealAnswer()">👁️ Revelar</button>
+      <button class="btn-ctrl btn-nxt" onclick="nextQFromProf()">Siguiente →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ LEADERBOARD ═══ -->
+<div class="screen" id="s-leaderboard">
+  <h2 class="lb-title">🏆 Resultados Finales</h2>
+  <p class="lb-sub">PrometeoQuiz — Prometeo &amp; Enfermería</p>
+  <div class="lb-grid">
+    <div class="lb-left" id="lbRows"></div>
+    <div class="lb-right">
+      <div class="stats-card">
+        <h3>📊 ESTADÍSTICAS DEL GRUPO</h3>
+        <div class="stat-row"><span>Total participantes</span><span class="sv" id="stTotal">—</span></div>
+        <div class="stat-row"><span>Promedio de aciertos</span><span class="sv" id="stAvgCorrect">—</span></div>
+        <div class="stat-row"><span>Pregunta más acertada</span><span class="sv" id="stBestQ">—</span></div>
+        <div class="stat-row"><span>Pregunta más difícil</span><span class="sv" id="stWorstQ">—</span></div>
+        <div class="stat-row"><span>Puntaje promedio</span><span class="sv" id="stAvgScore">—</span></div>
+      </div>
+      <div class="stats-card">
+        <h3>📈 DISTRIBUCIÓN DE ACIERTOS</h3>
+        <div id="distBars"></div>
+      </div>
+    </div>
+  </div>
+  <button class="btn-restart" onclick="restartAll()">🔁 Nueva Sesión</button>
+</div>
+
+<script>
+// ══════════════════════════════════
+// QUESTIONS
+// ══════════════════════════════════
+const questions = [
+  {q:"¿Qué le robó Prometeo a los dioses para dárselo a la humanidad?",opts:["El rayo de Zeus","El fuego sagrado","La ambrosía inmortal","El tridente de Poseidón"],correct:1,explain:"Prometeo robó el fuego del Olimpo, símbolo del conocimiento y la civilización. En enfermería, representa la transmisión del saber clínico al paciente."},
+  {q:"El 'fuego prometeico' en enfermería equivale mejor a:",opts:["Administrar medicamentos de urgencia","El conocimiento y la educación para la salud que se da al paciente","La tecnología de los hospitales modernos","Los protocolos de bioseguridad"],correct:1,explain:"El fuego = saber democratizado = educación para la salud y consentimiento informado. La enfermera transmite conocimiento que empodera al paciente."},
+  {q:"¿Qué castigo impuso Zeus a Prometeo por su transgresión?",opts:["Destierro eterno al Hades","Ser encadenado y tener su hígado devorado cada día","Convertirse en mortal","Perder su memoria y poderes"],correct:1,explain:"Zeus lo encadenó en el Cáucaso donde un águila devoraba su hígado a diario. Esta imagen es análoga al ciclo de burnout en enfermería."},
+  {q:"El hígado de Prometeo se regenera cada noche solo para ser devorado de nuevo. ¿Qué concepto de salud laboral representa esto?",opts:["Rotación de turnos saludable","Síndrome de Burnout — desgaste crónico sin recuperación real","Resiliencia positiva del profesional","Adaptación fisiológica al trabajo nocturno"],correct:1,explain:"La OMS reconoció el burnout como fenómeno ocupacional (CIE-11, 2019). El ciclo regeneración-destrucción representa burnout, no resiliencia genuina."},
+  {q:"¿Quién liberó finalmente a Prometeo de sus cadenas?",opts:["Atenea, diosa de la sabiduría","El propio Zeus, arrepentido","Heracles (Hércules)","Hefesto, el herrero olímpico"],correct:2,explain:"Heracles lo liberó. En enfermería, la 'liberación' equivale a la autonomía profesional: prescripción, investigación propia y reconocimiento legislativo."},
+  {q:"Las 'cadenas' de Prometeo, aplicadas a la enfermería, representan:",opts:["Los uniformes y equipos de protección","Las jerarquías institucionales y la subordinación histórica de la profesión","Los exámenes de certificación profesional","Los horarios de turno obligatorio"],correct:1,explain:"Las cadenas simbolizan la subordinación histórica de la enfermería al poder médico, la falta de autonomía y la desvalorización de la profesión."},
+  {q:"El mito puede usarse para una crítica feminista a la enfermería porque:",opts:["Prometeo era una figura femenina en el mito original","La narrativa de 'vocación heroica y sacrificial' justifica la explotación de una profesión históricamente feminizada","Las diosas griegas practicaban enfermería en los templos","Los griegos inventaron los primeros hospitales"],correct:1,explain:"La romantización del sacrificio como 'vocación' subvalora trabajos feminizados como la enfermería. La crítica feminista denuncia cómo el heroísmo sacrificial normaliza condiciones injustas."},
+  {q:"Prometeo transgredió el orden divino por amor a los humanos. Es análogo a una enfermera que:",opts:["Sigue todos los protocolos sin cuestionar","Defiende los derechos del paciente ante una orden médica que considera perjudicial","Administra tratamientos sin consentimiento","Rechaza trabajar en áreas de alto riesgo"],correct:1,explain:"El advocacy (defensa del paciente) es central en la enfermería. El Código del CIE (2021) establece que la enfermera actúa en defensa del paciente incluso en tensión con el equipo."},
+  {q:"¿Qué título tiene la obra de Esquilo que narra el mito de Prometeo encadenado?",opts:["La Odisea de Prometeo","Prometeo Liberado","Prometeo Encadenado","El Fuego de los Titanes"],correct:2,explain:"'Prometeo Encadenado' (Prometeo Desmotes) de Esquilo (~430 a.C.) es la tragedia que narra el castigo. Obra fundacional sobre el poder, el conocimiento y la justicia."},
+  {q:"¿Cuál es la lectura MÁS CRÍTICA del mito para la enfermería contemporánea?",opts:["Las enfermeras deben sufrir como Prometeo — eso es la vocación","El burnout y las condiciones injustas no son rasgos heroicos, sino fallas estructurales que deben resolverse","La enfermería siempre será subordinada a la medicina, como Prometeo a Zeus","El sufrimiento del cuidador es inevitable y digno de admiración"],correct:1,explain:"El pensamiento crítico distingue dedicación ética de explotación normalizada. La respuesta correcta orienta hacia cambio estructural, no resignación heroica."}
+];
+
+// ══════════════════════════════════
+// STATE
+// ══════════════════════════════════
+const ROOM_CODE = Math.floor(100000 + Math.random()*900000).toString();
+let players = {}; // {name: {score, correct, answers:[], streak, maxStreak}}
+let currentQ = -1;
+let timerInterval = null;
+let timeLeft = 20;
+let answerCounts = [0,0,0,0];
+let totalAnswered = 0;
+let revealed = false;
+const CIRC = 2*Math.PI*35; // 220
+
+// BroadcastChannel
+const bc = new BroadcastChannel('prometeo_quiz_' + ROOM_CODE);
+
+// ══════════════════════════════════
+// PARTICLES
+// ══════════════════════════════════
+(function(){
+  const c=document.getElementById('particles');
+  const cols=['#FF4D00','#FFD700','#FF8C00'];
+  for(let i=0;i<20;i++){
+    const p=document.createElement('div');p.className='particle';
+    const s=Math.random()*5+3;
+    p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*3)]};animation-duration:${Math.random()*8+7}s;animation-delay:${Math.random()*8}s;`;
+    c.appendChild(p);
+  }
+})();
+
+// ══════════════════════════════════
+// SHOW CODE
+// ══════════════════════════════════
+document.getElementById('roomCode').textContent = ROOM_CODE;
+
+// ══════════════════════════════════
+// BROADCAST HANDLER
+// ══════════════════════════════════
+bc.onmessage = (e) => {
+  const msg = e.data;
+  if (msg.type === 'join') {
+    addPlayer(msg.name);
+  }
+  if (msg.type === 'answer') {
+    registerAnswer(msg.name, msg.qIndex, msg.answerIdx, msg.timeUsed, msg.score);
+  }
+};
+
+function addPlayer(name) {
+  if (!players[name]) {
+    players[name] = {score:0, correct:0, answers:[], streak:0, maxStreak:0};
+    renderPlayers();
+    bc.postMessage({type:'joined', name});
+  }
+}
+
+function renderPlayers() {
+  const grid = document.getElementById('playersGrid');
+  const names = Object.keys(players);
+  document.getElementById('playerCount').textContent = names.length;
+  if (names.length === 0) {
+    grid.innerHTML = '<div style="color:var(--muted);font-size:.85rem;width:100%;text-align:center;padding:2rem;">Esperando alumnos...</div>';
+    return;
+  }
+  grid.innerHTML = names.map(n => `<div class="player-chip"><span class="chip-dot"></span>${n}</div>`).join('');
+}
+
+function registerAnswer(name, qIdx, ansIdx, timeUsed, pts) {
+  if (!players[name] || qIdx !== currentQ) return;
+  if (players[name].answers[qIdx] !== undefined) return; // already answered
+
+  players[name].answers[qIdx] = ansIdx;
+  const correct = ansIdx === questions[qIdx].correct;
+
+  if (correct) {
+    players[name].score += pts;
+    players[name].correct++;
+    players[name].streak++;
+    if (players[name].streak > players[name].maxStreak) players[name].maxStreak = players[name].streak;
+  } else {
+    players[name].streak = 0;
+  }
+
+  answerCounts[ansIdx]++;
+  totalAnswered++;
+  updateLiveBars();
+}
+
+function updateLiveBars() {
+  const total = Object.keys(players).length || 1;
+  document.getElementById('liveAnswered').textContent = totalAnswered;
+  document.getElementById('qdAnsweredCount').textContent = totalAnswered + ' respondieron';
+  for (let i=0;i<4;i++) {
+    const pct = Math.round((answerCounts[i]/total)*100);
+    document.getElementById('bar'+i).style.height = Math.max(4, pct*0.4) + 'px';
+    document.getElementById('bnum'+i).textContent = answerCounts[i];
+  }
+}
+
+// ══════════════════════════════════
+// QUIZ CONTROL
+// ══════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startQuiz() {
+  if (Object.keys(players).length === 0) {
+    // demo mode — add fake players
+    const fakes = ['Ana M.','Carlos R.','Sofía G.','Miguel T.','Valeria P.','Luis H.','Carmen J.','Diego F.','Paola S.','Roberto V.','Elena C.','Andrés B.','Natalia Q.','Fernando O.','Isabel M.'];
+    fakes.forEach(n => addPlayer(n));
+  }
+  currentQ = -1;
+  nextQFromProf();
+}
+
+function nextQFromProf() {
+  currentQ++;
+  if (currentQ >= questions.length) { showLeaderboard(); return; }
+  revealed = false;
+  answerCounts = [0,0,0,0];
+  totalAnswered = 0;
+  updateLiveBars();
+  renderQuestionDisplay();
+  showScreen('s-qdisplay');
+  bc.postMessage({type:'question', qIndex:currentQ, question:questions[currentQ]});
+  startTimer();
+}
+
+function renderQuestionDisplay() {
+  const q = questions[currentQ];
+  // dots
+  let dots='';
+  for(let i=0;i<questions.length;i++){
+    dots+=`<div class="qd-dot ${i<currentQ?'done':i===currentQ?'cur':''}"></div>`;
+  }
+  document.getElementById('qdProgress').innerHTML=dots;
+  document.getElementById('qdBadge').textContent=`${currentQ+1} / ${questions.length}`;
+  document.getElementById('qdQText').textContent=q.q;
+  const icons=['▲','◆','●','✖'];
+  document.getElementById('qdAnswers').innerHTML=q.opts.map((o,i)=>
+    `<div class="qd-ans" data-c="${i}"><div class="ans-shape">${icons[i]}</div>${o}</div>`
+  ).join('');
+  updateLiveBars();
+}
+
+function startTimer() {
+  timeLeft = 20;
+  updateTimerDisplay();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    timeLeft--;
+    updateTimerDisplay();
+    if(timeLeft<=0){clearInterval(timerInterval);revealAnswer();}
+  },1000);
+}
+
+function updateTimerDisplay(){
+  const arc=document.getElementById('btArc');
+  const num=document.getElementById('btNum');
+  const ratio=timeLeft/20;
+  arc.style.strokeDashoffset=CIRC*(1-ratio);
+  num.textContent=timeLeft;
+  arc.style.stroke=timeLeft>10?'var(--yellow-l)':timeLeft>5?'#FF8C00':'#FF3355';
+  num.style.color=arc.style.stroke;
+}
+
+function revealAnswer(){
+  if(revealed)return;
+  revealed=true;
+  clearInterval(timerInterval);
+  bc.postMessage({type:'reveal', qIndex:currentQ, correct:questions[currentQ].correct, explain:questions[currentQ].explain});
+  const ans=document.querySelectorAll('.qd-ans');
+  ans.forEach((el,i)=>{
+    if(i===questions[currentQ].correct) el.classList.add('reveal-correct');
+    else el.classList.add('reveal-wrong');
+  });
+}
+
+// ══════════════════════════════════
+// LEADERBOARD
+// ══════════════════════════════════
+function showLeaderboard(){
+  bc.postMessage({type:'end'});
+  showScreen('s-leaderboard');
+
+  const sorted=Object.entries(players).sort((a,b)=>b[1].score-a[1].score);
+  const topScore=sorted[0]?sorted[0][1].score:1;
+  const ranks=['r1','r2','r3'];
+  const rankIcons=['🥇','🥈','🥉'];
+
+  document.getElementById('lbRows').innerHTML=sorted.slice(0,10).map(([name,p],i)=>{
+    const cls=i<3?ranks[i]:'rn';
+    const lbl=i<3?rankIcons[i]:(i+1);
+    const pct=Math.round((p.score/Math.max(topScore,1))*100);
+    return `<div class="podium-row ${i===0?'gold':''}" style="animation-delay:${i*.12}s">
+      <div class="rank-badge ${cls}">${lbl}</div>
+      <div class="pr-info">
+        <div class="pr-name">${name}</div>
+        <div class="pr-correct">${p.correct}/${questions.length} correctas · racha máx: ${p.maxStreak}🔥</div>
+        <div class="pr-bar-wrap"><div class="pr-bar-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="pr-score">${p.score.toLocaleString()}</div>
+    </div>`;
+  }).join('');
+
+  // Stats
+  const total=sorted.length;
+  const avgCorrect=total?Math.round(sorted.reduce((s,[,p])=>s+p.correct,0)/total*10)/10:0;
+  const avgScore=total?Math.round(sorted.reduce((s,[,p])=>s+p.score,0)/total):0;
+
+  // per-question accuracy
+  const qAcc=questions.map((_,qi)=>{
+    const correctCount=Object.values(players).filter(p=>p.answers[qi]===questions[qi].correct).length;
+    return total?Math.round(correctCount/total*100):0;
+  });
+  const bestQi=qAcc.indexOf(Math.max(...qAcc));
+  const worstQi=qAcc.indexOf(Math.min(...qAcc));
+
+  document.getElementById('stTotal').textContent=total;
+  document.getElementById('stAvgCorrect').textContent=avgCorrect+'/10';
+  document.getElementById('stBestQ').textContent='P'+(bestQi+1)+' ('+qAcc[bestQi]+'% aciertos)';
+  document.getElementById('stWorstQ').textContent='P'+(worstQi+1)+' ('+qAcc[worstQi]+'% aciertos)';
+  document.getElementById('stAvgScore').textContent=avgScore.toLocaleString()+' pts';
+
+  // Distribution bars
+  const buckets=[0,0,0,0,0]; // 0-2, 3-4, 5-6, 7-8, 9-10
+  sorted.forEach(([,p])=>{
+    const c=p.correct;
+    if(c<=2)buckets[0]++;
+    else if(c<=4)buckets[1]++;
+    else if(c<=6)buckets[2]++;
+    else if(c<=8)buckets[3]++;
+    else buckets[4]++;
+  });
+  const maxB=Math.max(...buckets,1);
+  const labels=['0-2','3-4','5-6','7-8','9-10'];
+  const colors=['#E21B3C','#FF8C00','#FFC107','#26890C','#4CAF50'];
+  document.getElementById('distBars').innerHTML=buckets.map((b,i)=>
+    `<div class="dist-row">
+      <div class="dist-label">${labels[i]}</div>
+      <div class="dist-bar"><div class="dist-fill" style="width:${Math.round(b/maxB*100)}%;background:${colors[i]}"></div></div>
+      <div class="dist-num">${b}</div>
+    </div>`
+  ).join('');
+}
+
+function restartAll(){
+  players={};currentQ=-1;
+  bc.postMessage({type:'restart'});
+  showScreen('s-lobby');
+  renderPlayers();
+}
+</script>
+</body>
+</html>

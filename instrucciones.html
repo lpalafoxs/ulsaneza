@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📋 Instrucciones — PrometeoQuiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:#0D0D1A;color:#F0EDE8;min-height:100vh;padding:2rem 1rem;}
+.wrap{max-width:780px;margin:0 auto;}
+h1{font-family:'Montserrat',sans-serif;font-weight:900;font-size:2rem;background:linear-gradient(135deg,#FF4D00,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.3rem;}
+.sub{color:#8888AA;font-size:.9rem;margin-bottom:2.5rem;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,215,0,.3),transparent);margin:2rem 0;}
+.step-card{background:#1A1A2E;border-radius:14px;padding:1.5rem;margin-bottom:1rem;border:1px solid rgba(255,255,255,.06);display:flex;gap:1.2rem;align-items:flex-start;}
+.step-num{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#FF4D00,#FF8C00);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:1rem;flex-shrink:0;}
+.step-body h3{font-size:1rem;font-weight:800;margin-bottom:.3rem;color:#FFD700;}
+.step-body p{font-size:.88rem;color:#A0A0C0;line-height:1.7;}
+.step-body code{background:rgba(255,77,0,.2);color:#FF8C00;padding:.1rem .4rem;border-radius:4px;font-size:.85rem;}
+.highlight-box{background:rgba(255,77,0,.1);border:1px solid rgba(255,77,0,.3);border-radius:12px;padding:1.2rem 1.5rem;margin:1.5rem 0;}
+.highlight-box h3{color:#FF8C00;font-size:.9rem;margin-bottom:.5rem;}
+.highlight-box p{font-size:.85rem;color:#C0C0C0;line-height:1.7;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;}
+.col-card{background:#22223A;border-radius:12px;padding:1.2rem;border:1px solid rgba(255,255,255,.05);}
+.col-card h4{font-size:.8rem;letter-spacing:.1em;color:#8888AA;margin-bottom:.7rem;font-weight:800;}
+.col-card ul{list-style:none;font-size:.85rem;color:#C0C0C0;line-height:2;}
+.col-card ul li::before{content:'→ ';color:#FF4D00;}
+.badge{display:inline-block;padding:.2rem .7rem;border-radius:999px;font-size:.72rem;font-weight:800;}
+.b-prof{background:rgba(19,104,206,.3);color:#2196F3;border:1px solid #1368CE;}
+.b-alu{background:rgba(255,77,0,.2);color:#FF6B35;border:1px solid #FF4D00;}
+@media(max-width:500px){.two-col{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div style="font-size:2.5rem;margin-bottom:.5rem;">🔥</div>
+  <h1>PrometeoQuiz — Guía de Uso</h1>
+  <p class="sub">Sistema para 40 alumnos con celular/laptop · BroadcastChannel (mismo navegador, misma PC del profesor)</p>
+
+  <div class="highlight-box">
+    <h3>⚠️ Cómo funciona la comunicación</h3>
+    <p>Los dos archivos (<strong>profesor.html</strong> y <strong>alumno.html</strong>) se comunican usando la <strong>BroadcastChannel API</strong> del navegador. Esto significa que deben estar abiertos en el <strong>mismo navegador del mismo equipo</strong>. El código de sala sirve para emparejarlos.<br><br>
+    Para 40 alumnos en sus propios dispositivos, usa la opción de <strong>red local (recomendada)</strong> descrita abajo.</p>
+  </div>
+
+  <div class="divider"></div>
+  <h2 style="font-size:1.1rem;color:#FFD700;margin-bottom:1rem;">📡 OPCIÓN A — Red Local del Aula (Recomendada para 40 alumnos)</h2>
+
+  <div class="step-card">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <h3>Conectar todos a la misma red WiFi</h3>
+      <p>El profesor y todos los alumnos deben estar conectados a la <strong>misma red WiFi del aula</strong> (o red del campus). Esto es fundamental.</p>
+    </div>
+  </div>
+  <div class="step-card">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <h3>El profesor abre <code>profesor.html</code> en su laptop</h3>
+      <p>Proyecta esa ventana en el cañón. El código de sala aparecerá automáticamente en grande. Comparte ese código con los alumnos (está visible en el proyector).</p>
+    </div>
+  </div>
+  <div class="step-card">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <h3>Compartir <code>alumno.html</code> a los alumnos</h3>
+      <p>Opciones para distribuir el archivo:<br>
+      • Súbelo a <strong>Google Classroom</strong> como material y que lo descarguen<br>
+      • Compártelo por <strong>WhatsApp del grupo</strong><br>
+      • Usa un <strong>QR de Google Drive</strong> con el archivo<br>
+      • Usa una carpeta compartida en la red local
+      </p>
+    </div>
+  </div>
+  <div class="step-card">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <h3>Alumnos abren <code>alumno.html</code> en su navegador</h3>
+      <p>Cada alumno ingresa el <strong>código de sala</strong> (el que está proyectado) y su nombre. Al unirse, su chip aparece en la pantalla del profesor en tiempo real.</p>
+    </div>
+  </div>
+  <div class="step-card">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <h3>Profesor presiona ⚡ INICIAR QUIZ</h3>
+      <p>Todos los alumnos reciben la señal simultáneamente. El profesor controla el ritmo: puede revelar la respuesta y avanzar manualmente, o dejar que el temporizador lo haga automático.</p>
+    </div>
+  </div>
+
+  <div class="highlight-box" style="background:rgba(38,137,12,.1);border-color:rgba(76,175,80,.3);">
+    <h3 style="color:#4CAF50;">✅ Nota técnica importante</h3>
+    <p>La BroadcastChannel API funciona entre <strong>pestañas/ventanas del mismo navegador en el mismo sistema operativo</strong>. Para comunicación real entre dispositivos distintos en red, se necesitaría un servidor. <br><br>
+    <strong>Solución práctica sin servidor:</strong> Si los alumnos están en dispositivos distintos, el profesor puede usar la pantalla de "modo demo" del archivo profesor.html (que simula 15 alumnos automáticamente si nadie se conecta). Los alumnos juegan en el <code>alumno.html</code> de forma individual y al final comparten sus puntuaciones verbalmente o en el pizarrón.</p>
+  </div>
+
+  <div class="divider"></div>
+  <h2 style="font-size:1.1rem;color:#FFD700;margin-bottom:1rem;">💻 OPCIÓN B — Un solo equipo, pantalla proyectada</h2>
+  <p style="font-size:.88rem;color:#A0A0C0;line-height:1.7;margin-bottom:1rem;">Si solo hay un proyector y los alumnos no tienen dispositivos propios:</p>
+
+  <div class="two-col">
+    <div class="col-card">
+      <h4>🖥️ EN EL PROYECTOR</h4>
+      <ul>
+        <li>Abrir <code>profesor.html</code></li>
+        <li>Proyectar pantalla completa</li>
+        <li>El profesor controla el quiz</li>
+        <li>Preguntas visibles para todos</li>
+      </ul>
+    </div>
+    <div class="col-card">
+      <h4>✋ LOS ALUMNOS RESPONDEN</h4>
+      <ul>
+        <li>Levantan tarjeta de color</li>
+        <li>Rojo / Azul / Amarillo / Verde</li>
+        <li>O votan levantando la mano</li>
+        <li>El profesor registra en voz alta</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <h2 style="font-size:1.1rem;color:#FFD700;margin-bottom:1rem;">🎮 CONTROLES DEL PROFESOR</h2>
+  <div class="two-col">
+    <div class="col-card">
+      <h4>DURANTE EL QUIZ</h4>
+      <ul>
+        <li>👁️ Revelar → muestra respuesta correcta</li>
+        <li>Siguiente → avanza a la pregunta</li>
+        <li>El timer es automático (20 seg)</li>
+        <li>Las barras se actualizan en vivo</li>
+      </ul>
+    </div>
+    <div class="col-card">
+      <h4>AL FINAL</h4>
+      <ul>
+        <li>Tabla de líderes automática</li>
+        <li>Estadísticas del grupo completo</li>
+        <li>Pregunta más/menos acertada</li>
+        <li>Distribución de aciertos</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <p style="font-size:.8rem;color:#555577;text-align:center;">PrometeoQuiz · Prometeo &amp; Enfermería · Actividad Crítica Interactiva</p>
+</div>
+</body>
+</html>
