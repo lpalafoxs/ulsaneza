@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>🔥 PrometeoQuiz — Alumno</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fire:#FF4D00;--gold:#FFD700;--ember:#FF8C00;
+  --red:#E21B3C;--blue:#1368CE;--yellow:#D89E00;--green:#26890C;
+  --red-l:#FF3355;--blue-l:#2196F3;--yellow-l:#FFC107;--green-l:#4CAF50;
+  --dark:#0D0D1A;--card:#1A1A2E;--card2:#22223A;--muted:#8888AA;--text:#FFF;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+.screen{display:none;position:relative;z-index:1;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;}
+.screen.active{display:flex;}
+
+/* ═══ JOIN ═══ */
+#s-join{background:radial-gradient(ellipse 80% 60% at 50% 110%,rgba(255,77,0,.2),transparent 55%);}
+.join-logo{font-size:3.5rem;animation:fp 1.5s ease-in-out infinite alternate;margin-bottom:.5rem;}
+@keyframes fp{from{transform:scaleY(1) rotate(-2deg);filter:drop-shadow(0 0 12px #FF4D00);}to{transform:scaleY(1.1) rotate(2deg);filter:drop-shadow(0 0 24px #FF8C00);}}
+.join-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.8rem;background:linear-gradient(135deg,#FF4D00,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.3rem;}
+.join-sub{color:var(--muted);font-size:.85rem;margin-bottom:1.8rem;}
+
+.join-card{background:var(--card);border-radius:20px;padding:2rem;width:100%;max-width:380px;border:1px solid rgba(255,255,255,.07);box-shadow:0 8px 40px rgba(0,0,0,.5);}
+.field-label{font-size:.7rem;letter-spacing:.15em;color:var(--muted);font-weight:800;margin-bottom:.4rem;display:block;}
+input{width:100%;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);border-radius:12px;color:#fff;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;padding:.8rem 1rem;outline:none;transition:border-color .2s;margin-bottom:1rem;}
+input:focus{border-color:var(--yellow-l);}
+input::placeholder{color:rgba(255,255,255,.25);}
+input.code-input{font-family:'Montserrat',sans-serif;font-size:1.5rem;letter-spacing:.2em;text-align:center;}
+.err-msg{font-size:.8rem;color:var(--red-l);text-align:center;min-height:1.2rem;margin-bottom:.5rem;}
+.btn-join{width:100%;padding:.95rem;border:none;border-radius:12px;background:linear-gradient(135deg,#FF4D00,#FF8C00);color:#fff;font-family:'Montserrat',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;box-shadow:0 4px 20px rgba(255,77,0,.4);transition:transform .15s;}
+.btn-join:hover{transform:scale(1.03);}
+
+/* ═══ WAITING ═══ */
+#s-waiting{text-align:center;}
+.wait-icon{font-size:3rem;animation:spin 3s linear infinite;display:block;margin-bottom:1rem;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.wait-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.3rem;margin-bottom:.5rem;}
+.wait-sub{color:var(--muted);font-size:.9rem;margin-bottom:2rem;}
+.player-badge{background:linear-gradient(135deg,rgba(255,77,0,.2),rgba(255,140,0,.1));border:1px solid rgba(255,140,0,.3);border-radius:999px;padding:.5rem 1.5rem;font-weight:800;font-size:1rem;margin-bottom:.5rem;}
+.room-code-chip{background:rgba(255,255,255,.06);border-radius:8px;padding:.3rem .8rem;font-family:'Montserrat',sans-serif;font-size:.85rem;color:var(--muted);}
+
+/* ═══ COUNTDOWN ═══ */
+#s-countdown{text-align:center;}
+.cd-num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(6rem,25vw,10rem);animation:cdPop 1s ease-in-out;color:#fff;text-shadow:0 0 40px rgba(255,200,0,.5);}
+@keyframes cdPop{0%{transform:scale(1.5);opacity:0;}40%{transform:scale(.9);opacity:1;}100%{transform:scale(1);}}
+
+/* ═══ QUESTION ═══ */
+#s-question{padding:0;justify-content:flex-start;}
+.q-top{background:linear-gradient(180deg,#1A1A2E,#14141E);padding:.8rem 1rem;width:100%;display:flex;align-items:center;gap:.8rem;border-bottom:2px solid rgba(255,255,255,.05);}
+.q-num{background:rgba(255,255,255,.08);border-radius:6px;padding:.2rem .6rem;font-weight:800;font-size:.75rem;color:var(--muted);}
+.q-my-score{margin-left:auto;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.9rem;color:var(--yellow-l);}
+
+/* MINI TIMER */
+.mini-timer-wrap{position:relative;width:48px;height:48px;flex-shrink:0;}
+.mt-svg{transform:rotate(-90deg);}
+.mt-bg{fill:none;stroke:rgba(255,255,255,.1);stroke-width:5;}
+.mt-arc{fill:none;stroke:var(--yellow-l);stroke-width:5;stroke-linecap:round;stroke-dasharray:126;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke .3s;}
+.mt-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.9rem;}
+
+.q-body{flex:1;width:100%;display:flex;flex-direction:column;padding:.8rem;}
+.q-text-box{background:var(--card);border-radius:14px;padding:1.2rem;text-align:center;min-height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:.8rem;border:1px solid rgba(255,255,255,.06);}
+.q-text{font-size:clamp(.9rem,3.5vw,1.1rem);font-weight:800;line-height:1.5;}
+
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;flex:1;}
+.ans-btn{border:none;border-radius:14px;padding:.9rem .8rem;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(.8rem,3vw,.95rem);color:#fff;text-align:left;display:flex;align-items:center;gap:.6rem;transition:transform .1s,filter .2s;min-height:64px;line-height:1.3;position:relative;overflow:hidden;-webkit-appearance:none;}
+.ans-btn:active:not(:disabled){transform:scale(.96);}
+.ans-btn:disabled{cursor:default;}
+.ans-btn[data-c="0"]{background:var(--red);}
+.ans-btn[data-c="1"]{background:var(--blue);}
+.ans-btn[data-c="2"]{background:var(--yellow);color:#1a1a1a;}
+.ans-btn[data-c="3"]{background:var(--green);}
+.ans-btn.dim{filter:brightness(.35) saturate(.2);}
+.ans-btn.selected{outline:3px solid #fff;}
+.ans-btn.correct-a{animation:cPulse .5s ease;box-shadow:0 0 20px rgba(76,175,80,.7);}
+.ans-btn.wrong-a{animation:wShake .4s ease;}
+@keyframes cPulse{0%{transform:scale(1);}40%{transform:scale(1.05);}100%{transform:scale(1);}}
+@keyframes wShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
+.ans-icon{width:30px;height:30px;border-radius:6px;background:rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.wait-ans{text-align:center;font-size:.85rem;color:var(--muted);padding:.5rem;animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* ═══ FEEDBACK ═══ */
+#s-feedback{text-align:center;padding:2rem;}
+.fb-emoji{font-size:4rem;display:block;margin-bottom:.8rem;}
+.fb-status{font-family:'Montserrat',sans-serif;font-weight:900;font-size:2rem;margin-bottom:.5rem;}
+.fb-status.ok{color:var(--green-l);}
+.fb-status.no{color:var(--red-l);}
+.fb-pts{font-size:1.1rem;color:var(--yellow-l);font-weight:700;margin-bottom:1rem;}
+.fb-explain{font-size:.88rem;color:var(--muted);line-height:1.7;max-width:360px;background:var(--card);border-radius:12px;padding:1rem;margin:0 auto 1rem;}
+.fb-wait{font-size:.8rem;color:var(--muted);animation:pulse 1.5s ease-in-out infinite;}
+.my-score-display{background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,77,0,.1));border:1px solid rgba(255,215,0,.3);border-radius:12px;padding:.8rem 1.5rem;margin-bottom:1rem;}
+.ms-num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.6rem;color:var(--gold);}
+.ms-lbl{font-size:.7rem;color:var(--muted);}
+
+/* ═══ END ═══ */
+#s-end{text-align:center;padding:2rem;}
+.end-trophy{font-size:3.5rem;display:block;animation:tBounce 1s ease infinite alternate;}
+@keyframes tBounce{from{transform:translateY(0);}to{transform:translateY(-10px);}}
+.end-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.5rem;margin:.5rem 0;}
+.end-name{color:var(--gold);}
+.result-card{background:var(--card);border-radius:16px;padding:1.5rem;width:100%;max-width:360px;margin:1rem 0;border:1px solid rgba(255,255,255,.07);}
+.rc-row{display:flex;justify-content:space-between;align-items:center;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.9rem;}
+.rc-row:last-child{border:none;}
+.rc-val{font-weight:800;color:var(--yellow-l);}
+.level-badge{display:inline-block;padding:.5rem 1.5rem;border-radius:999px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.9rem;background:linear-gradient(135deg,#FF4D00,#FFD700);color:#1a1a1a;margin-top:.5rem;}
+</style>
+</head>
+<body>
+
+<!-- ═══ JOIN ═══ -->
+<div class="screen active" id="s-join">
+  <div class="join-logo">🔥</div>
+  <h1 class="join-title">PrometeoQuiz</h1>
+  <p class="join-sub">Ingresa el código que proyecta tu profesor</p>
+  <div class="join-card">
+    <label class="field-label">CÓDIGO DE SALA</label>
+    <input class="code-input" type="text" id="codeInput" placeholder="000000" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+    <label class="field-label">TU NOMBRE</label>
+    <input type="text" id="nameInput" placeholder="Ej: Ana García" maxlength="20">
+    <div class="err-msg" id="errMsg"></div>
+    <button class="btn-join" onclick="joinRoom()">🚀 UNIRSE AL QUIZ</button>
+  </div>
+</div>
+
+<!-- ═══ WAITING ═══ -->
+<div class="screen" id="s-waiting">
+  <span class="wait-icon">⏳</span>
+  <div class="wait-title">¡Estás dentro!</div>
+  <div class="wait-sub">Esperando que el profesor inicie el quiz...</div>
+  <div class="player-badge" id="waitName"></div>
+  <div class="room-code-chip" id="waitCode">Sala: —</div>
+</div>
+
+<!-- ═══ COUNTDOWN ═══ -->
+<div class="screen" id="s-countdown">
+  <div class="cd-num" id="cdNum">3</div>
+</div>
+
+<!-- ═══ QUESTION ═══ -->
+<div class="screen" id="s-question">
+  <div class="q-top">
+    <div class="q-num" id="qNumLabel">1/10</div>
+    <div class="mini-timer-wrap">
+      <svg class="mt-svg" width="48" height="48" viewBox="0 0 48 48">
+        <circle class="mt-bg" cx="24" cy="24" r="20"/>
+        <circle class="mt-arc" id="mtArc" cx="24" cy="24" r="20"/>
+      </svg>
+      <div class="mt-num" id="mtNum">20</div>
+    </div>
+    <div class="q-my-score">⭐ <span id="myScoreLive">0</span></div>
+  </div>
+  <div class="q-body">
+    <div class="q-text-box"><div class="q-text" id="qTextEl"></div></div>
+    <div class="answers" id="answersEl"></div>
+    <div class="wait-ans" id="waitAns" style="display:none">Esperando que todos respondan...</div>
+  </div>
+</div>
+
+<!-- ═══ FEEDBACK ═══ -->
+<div class="screen" id="s-feedback">
+  <span class="fb-emoji" id="fbEmoji"></span>
+  <div class="fb-status" id="fbStatus"></div>
+  <div class="fb-pts" id="fbPts"></div>
+  <div class="my-score-display">
+    <div class="ms-num" id="fbTotalScore">0</div>
+    <div class="ms-lbl">PUNTOS TOTALES</div>
+  </div>
+  <div class="fb-explain" id="fbExplain"></div>
+  <div class="fb-wait">⏳ Esperando siguiente pregunta...</div>
+</div>
+
+<!-- ═══ END ═══ -->
+<div class="screen" id="s-end">
+  <span class="end-trophy">🏆</span>
+  <div class="end-title">¡Quiz Terminado, <span class="end-name" id="endNameEl"></span>!</div>
+  <div class="result-card">
+    <div class="rc-row"><span>Puntuación final</span><span class="rc-val" id="endScore">0</span></div>
+    <div class="rc-row"><span>Respuestas correctas</span><span class="rc-val" id="endCorrect">0/10</span></div>
+    <div class="rc-row"><span>Racha máxima</span><span class="rc-val" id="endStreak">0 🔥</span></div>
+    <div class="rc-row"><span>Nivel</span><span class="rc-val" id="endLevel">—</span></div>
+  </div>
+  <p style="font-size:.85rem;color:var(--muted);">¡Mira los resultados del grupo en la pantalla del proyector!</p>
+</div>
+
+<script>
+// ══════════════════════════════════
+// STATE
+// ══════════════════════════════════
+let bc = null;
+let myName = '';
+let myScore = 0;
+let myCorrect = 0;
+let myStreak = 0;
+let myMaxStreak = 0;
+let currentQ = -1;
+let answered = false;
+let timerInterval = null;
+let timeLeft = 20;
+let questionStartTime = 0;
+const CIRC_MINI = 2*Math.PI*20; // 126
+const TIMER_MAX = 20;
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ══════════════════════════════════
+// JOIN
+// ══════════════════════════════════
+function joinRoom(){
+  const code = document.getElementById('codeInput').value.trim();
+  const name = document.getElementById('nameInput').value.trim();
+  const err = document.getElementById('errMsg');
+
+  if(code.length !== 6){ err.textContent='El código debe tener 6 dígitos.'; return; }
+  if(!name){ err.textContent='Ingresa tu nombre.'; return; }
+  err.textContent='';
+
+  myName = name;
+  // Connect to channel
+  bc = new BroadcastChannel('prometeo_quiz_' + code);
+
+  bc.onmessage = handleMessage;
+  bc.postMessage({type:'join', name:myName});
+
+  document.getElementById('waitName').textContent = '👤 ' + myName;
+  document.getElementById('waitCode').textContent = 'Sala: ' + code;
+  showScreen('s-waiting');
+}
+
+// ══════════════════════════════════
+// MESSAGE HANDLER
+// ══════════════════════════════════
+function handleMessage(e){
+  const msg = e.data;
+
+  if(msg.type === 'joined' && msg.name === myName){
+    // confirmed
+  }
+
+  if(msg.type === 'question'){
+    currentQ = msg.qIndex;
+    answered = false;
+    renderQuestion(msg.question, msg.qIndex);
+    runCountdown(3);
+  }
+
+  if(msg.type === 'reveal'){
+    clearInterval(timerInterval);
+    if(!answered){
+      // time's up — didn't answer
+      showFeedback(false, 0, msg.explain, msg.correct);
+    }
+  }
+
+  if(msg.type === 'end'){
+    showEndScreen();
+  }
+
+  if(msg.type === 'restart'){
+    myScore=0;myCorrect=0;myStreak=0;myMaxStreak=0;currentQ=-1;
+    showScreen('s-join');
+  }
+}
+
+// ══════════════════════════════════
+// COUNTDOWN
+// ══════════════════════════════════
+function runCountdown(n){
+  showScreen('s-countdown');
+  const el = document.getElementById('cdNum');
+  el.textContent = n;
+  el.style.animation='none';el.offsetHeight;el.style.animation='cdPop 1s ease-in-out';
+  if(n>0){ setTimeout(()=>runCountdown(n-1),1000); }
+  else {
+    el.textContent='🔥';
+    setTimeout(()=>{ showScreen('s-question'); startTimer(); }, 700);
+  }
+}
+
+// ══════════════════════════════════
+// QUESTION
+// ══════════════════════════════════
+function renderQuestion(q, qIdx){
+  document.getElementById('qNumLabel').textContent=(qIdx+1)+'/10';
+  document.getElementById('myScoreLive').textContent=myScore.toLocaleString();
+  document.getElementById('qTextEl').textContent=q.q;
+  document.getElementById('waitAns').style.display='none';
+  const icons=['▲','◆','●','✖'];
+  document.getElementById('answersEl').innerHTML=q.opts.map((o,i)=>
+    `<button class="ans-btn" data-c="${i}" onclick="selectAnswer(${i},${qIdx})">
+      <span class="ans-icon">${icons[i]}</span>${o}
+    </button>`
+  ).join('');
+}
+
+function startTimer(){
+  timeLeft=TIMER_MAX;
+  questionStartTime=Date.now();
+  updateMiniTimer();
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    updateMiniTimer();
+    if(timeLeft<=0){clearInterval(timerInterval);}
+  },1000);
+}
+
+function updateMiniTimer(){
+  const arc=document.getElementById('mtArc');
+  const num=document.getElementById('mtNum');
+  const ratio=timeLeft/TIMER_MAX;
+  arc.style.strokeDashoffset=CIRC_MINI*(1-ratio);
+  num.textContent=timeLeft;
+  arc.style.stroke=timeLeft>10?'var(--yellow-l)':timeLeft>5?'#FF8C00':'#FF3355';
+  num.style.color=arc.style.stroke;
+}
+
+function selectAnswer(idx, qIdx){
+  if(answered)return;
+  answered=true;
+  clearInterval(timerInterval);
+
+  const elapsed=(Date.now()-questionStartTime)/1000;
+  const speedRatio=Math.max(0,(TIMER_MAX-elapsed)/TIMER_MAX);
+
+  // We don't know correct here — wait for reveal
+  // Disable all buttons, highlight selected
+  document.querySelectorAll('.ans-btn').forEach(b=>{b.disabled=true;b.classList.add('dim');});
+  const sel=document.querySelector(`.ans-btn[data-c="${idx}"]`);
+  if(sel){sel.classList.remove('dim');sel.classList.add('selected');}
+  document.getElementById('waitAns').style.display='block';
+
+  // Send to professor
+  const pts=Math.round(500+500*speedRatio);
+  bc.postMessage({type:'answer',name:myName,qIndex:qIdx,answerIdx:idx,timeUsed:elapsed,score:pts});
+
+  // Store for local feedback (will be confirmed on reveal)
+  window._pendingAnswer={idx,pts,elapsed};
+}
+
+// Override reveal to show feedback
+const origHandle=handleMessage;
+bc.onmessage=function(e){
+  const msg=e.data;
+  if(msg.type==='reveal'){
+    clearInterval(timerInterval);
+    const correct=msg.correct;
+    if(window._pendingAnswer!==undefined){
+      const isCorrect=window._pendingAnswer.idx===correct;
+      const pts=isCorrect?window._pendingAnswer.pts:0;
+      if(isCorrect){myScore+=pts;myCorrect++;myStreak++;if(myStreak>myMaxStreak)myMaxStreak=myStreak;}
+      else{myStreak=0;}
+      // visual
+      document.querySelectorAll('.ans-btn').forEach((b,i)=>{
+        if(i===correct){b.classList.remove('dim');b.classList.add('correct-a');}
+        else if(i===window._pendingAnswer.idx){b.classList.remove('dim');b.classList.add('wrong-a');}
+      });
+      window._pendingAnswer=undefined;
+      setTimeout(()=>showFeedback(isCorrect,pts,msg.explain,correct),600);
+    } else if(!answered){
+      window._pendingAnswer=undefined;
+      showFeedback(false,0,msg.explain,correct);
+    }
+    return;
+  }
+  origHandle(e);
+};
+
+function showFeedback(correct,pts,explain,correctIdx){
+  document.getElementById('fbEmoji').textContent=correct?'🎉':'😬';
+  document.getElementById('fbStatus').textContent=correct?'¡CORRECTO!':'INCORRECTO';
+  document.getElementById('fbStatus').className='fb-status '+(correct?'ok':'no');
+  document.getElementById('fbPts').textContent=correct?`+${pts.toLocaleString()} puntos ⭐`:'Sin puntos esta vez';
+  document.getElementById('fbTotalScore').textContent=myScore.toLocaleString()+' pts';
+  document.getElementById('fbExplain').textContent=explain;
+  showScreen('s-feedback');
+}
+
+function showEndScreen(){
+  document.getElementById('endNameEl').textContent=myName;
+  document.getElementById('endScore').textContent=myScore.toLocaleString()+' pts';
+  document.getElementById('endCorrect').textContent=myCorrect+'/10';
+  document.getElementById('endStreak').textContent=myMaxStreak+' 🔥';
+  const lv=myScore>=8000?'🔥 Prometeo':myScore>=5000?'⚡ Titán':myScore>=3000?'🏛️ Filósofo':myScore>=1000?'📚 Aprendiz':'🌱 Iniciado';
+  document.getElementById('endLevel').textContent=lv;
+  showScreen('s-end');
+}
+
+// Handle late messages after screen change
+bc&&(bc.onmessage=function(e){
+  const msg=e.data;
+  if(msg.type==='question'){currentQ=msg.qIndex;answered=false;renderQuestion(msg.question,msg.qIndex);runCountdown(3);}
+  if(msg.type==='reveal'){
+    clearInterval(timerInterval);
+    const correct=msg.correct;
+    if(window._pendingAnswer!==undefined){
+      const isCorrect=window._pendingAnswer.idx===correct;
+      const pts=isCorrect?window._pendingAnswer.pts:0;
+      if(isCorrect){myScore+=pts;myCorrect++;myStreak++;if(myStreak>myMaxStreak)myMaxStreak=myStreak;}
+      else myStreak=0;
+      window._pendingAnswer=undefined;
+      setTimeout(()=>showFeedback(isCorrect,pts,msg.explain,correct),200);
+    } else if(!answered){showFeedback(false,0,msg.explain,correct);}
+  }
+  if(msg.type==='end')showEndScreen();
+  if(msg.type==='restart'){myScore=0;myCorrect=0;myStreak=0;myMaxStreak=0;showScreen('s-join');}
+});
+</script>
+</body>
+</html>
